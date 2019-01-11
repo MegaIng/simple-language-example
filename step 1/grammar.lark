@@ -1,0 +1,11 @@
+start: plus_atom   // The entry point of the grammar
+
+// '?' means unpack rule if only one child, '!' means keep all tokens, including strings (used to identify operators)
+!?plus_atom: mul_atom (("+"|"-") mul_atom)*
+!?mul_atom: prefix_atom (("*"|"/") prefix_atom)*
+!?prefix_atom: ("+"|"-")* power_atom
+!?power_atom: atom ("**" prefix_atom)* // FIXME: wrong associativity "2**3**4" is the same as "(2**3)**4" not (as normal) "2**(3**4)"
+?atom: "(" plus_atom ")"
+     | /[0-9]+(\.[0-9]+)?(e[+-][0-9]+)?/ -> number
+
+%ignore /\s/  // We don't care about spaces
