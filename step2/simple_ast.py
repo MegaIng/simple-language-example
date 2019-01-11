@@ -14,6 +14,7 @@ class AST(ABC):
         """Calculates the value of this expression"""
         raise NotImplementedError
 
+
 @dataclass
 class Number(AST):
     """A simple constant number"""
@@ -35,7 +36,7 @@ infix_operators: Dict[str, Callable[[float, float], float]] = {
 
 @dataclass
 class InfixOperation(AST):
-    """A Node with to children and one Operator to apply."""
+    """Represents a infix operator application of the form '<atom> <operator> <atom>'"""
     operator: str
     left: AST
     right: AST
@@ -53,6 +54,7 @@ prefix_operators: Dict[str, Callable[[float], float]] = {
 
 @dataclass
 class PrefixOperator(AST):
+    """Represents a prefix operator application of the 'form <operator> <atom>'"""
     operator: str
     operand: AST
 
