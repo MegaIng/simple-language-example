@@ -10,7 +10,7 @@ class AST(ABC):
     """The base class of all AST-Nodes. Will contain abstract methods."""
 
     @abstractmethod
-    def execute(self) -> float:
+    def calculate(self) -> float:
         """Calculates the value of this expression"""
         raise NotImplementedError
 
@@ -20,7 +20,7 @@ class Number(AST):
     """A simple constant number"""
     data: float  # For now we will simple use floats for everything
 
-    def execute(self):
+    def calculate(self):
         """Simple returns the stored value"""
         return self.data
 
@@ -41,9 +41,9 @@ class InfixOperation(AST):
     left: AST
     right: AST
 
-    def execute(self):
+    def calculate(self):
         """Executes the sub expressions and applies the operators to the return values."""
-        return infix_operators[self.operator](self.left.execute(), self.right.execute())
+        return infix_operators[self.operator](self.left.calculate(), self.right.calculate())
 
 
 prefix_operators: Dict[str, Callable[[float], float]] = {
@@ -58,6 +58,6 @@ class PrefixOperator(AST):
     operator: str
     operand: AST
 
-    def execute(self):
+    def calculate(self):
         """Executes the sub expression and applies the operator to the value"""
         return prefix_operators[self.operator](self.operand)

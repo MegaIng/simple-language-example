@@ -38,4 +38,4 @@ print(tree.pretty())
 
 ast_tree: AST = SimpleTransformer().transform(tree)  # Transform the parse Tree to our AST representation
 print(ast_tree)
-print(ast_tree.execute())
+print(ast_tree.calculate())

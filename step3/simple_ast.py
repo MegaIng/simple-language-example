@@ -11,7 +11,7 @@ class AST(ABC):
     """The base class of all AST-Nodes. Will contain abstract methods."""
 
     @abstractmethod
-    def execute(self, context: Dict[str, float]) -> float:
+    def calculate(self, context: Dict[str, float]) -> float:
         """
         Calculates the value of this expression, given the context,
         which represents a mapping from variable name to current value
@@ -24,7 +24,7 @@ class Number(AST):
     """A simple constant number"""
     data: float  # For now we will simple use floats for everything
 
-    def execute(self, context: Dict[str, float]) -> float:
+    def calculate(self, context: Dict[str, float]) -> float:
         """Simple returns the stored value"""
         return self.data
 
@@ -45,9 +45,9 @@ class InfixOperation(AST):
     left: AST
     right: AST
 
-    def execute(self, context: Dict[str, float]) -> float:
+    def calculate(self, context: Dict[str, float]) -> float:
         """Executes the sub expressions and applies the operators to the return values."""
-        return infix_operators[self.operator](self.left.execute(context), self.right.execute(context))
+        return infix_operators[self.operator](self.left.calculate(context), self.right.calculate(context))
 
 
 prefix_operators: Dict[str, Callable[[float], float]] = {
@@ -62,7 +62,7 @@ class PrefixOperator(AST):
     operator: str
     operand: AST
 
-    def execute(self, context: Dict[str, float]) -> float:
+    def calculate(self, context: Dict[str, float]) -> float:
         """Executes the sub expression and applies the operator to the value"""
         return prefix_operators[self.operator](self.operand)
 
@@ -89,9 +89,9 @@ class FunctionCall(AST):
     name: str
     arguments: List[AST]
 
-    def execute(self, context: Dict[str, float]) -> float:
+    def calculate(self, context: Dict[str, float]) -> float:
         """Executes all arguments and calls the function, returning its result"""
-        return builtin_functions[self.name](*(a.execute(context) for a in self.arguments))
+        return builtin_functions[self.name](*(a.calculate(context) for a in self.arguments))
 
 
 @dataclass
@@ -99,5 +99,5 @@ class Variable(AST):
     """Represents a variable loading? lookup? whatever you want to call it"""
     name: str
 
-    def execute(self, context: Dict[str, float]):
+    def calculate(self, context: Dict[str, float]):
         return context[self.name]
